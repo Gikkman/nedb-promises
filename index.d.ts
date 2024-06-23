@@ -26,18 +26,24 @@ declare namespace NeDB {
      * queues a compaction of the datafile in the executor, to be executed
      * sequentially after all pending operations. The datastore will fire a
      * compaction.done event once compaction is finished.
+     * 
+     * @deprecated Use `datastore.compactDatafile()` instead.
      */
     compactDatafile(): void;
 
     /**
      * Set automatic compaction at a regular `interval` in milliseconds (a
      * minimum of 5s is enforced).
+     * 
+     * @deprecated Use `datastore.setAutocompactionInterval(interval: number)` instead.
      */
     setAutocompactionInterval(interval: number): void;
 
     /**
      * Stop automatic compaction with
      * `datastore.persistence.stopAutocompaction()`.
+     * 
+     * @deprecated Use `datastore.stopAutocompaction()` instead.
      */
     stopAutocompaction(): void;
   }
@@ -714,6 +720,33 @@ declare namespace NeDB {
      * Remove an index.
      */
     removeIndex(fieldName: string): Promise<void>;
+
+    /**
+     * Under the hood, NeDB's persistence uses an append-only format, meaning
+     * that all updates and deletes actually result in lines added at the end
+     * of the datafile, for performance reasons. The database is automatically
+     * compacted (i.e. put back in the one-line-per-document format) every
+     * time you load each database within your application.
+     *
+     * You can manually call the compaction function with
+     * `datastore.compactDatafile` which takes no argument. It
+     * queues a compaction of the datafile in the executor, to be executed
+     * sequentially after all pending operations. The datastore will fire a
+     * compaction.done event once compaction is finished.
+     */
+    compactDatafile(): void;
+
+    /**
+     * Set automatic compaction at a regular `interval` in milliseconds (a
+     * minimum of 5s is enforced).
+     */
+    setAutocompactionInterval(interval: number): void;
+
+    /**
+     * Stop automatic compaction with
+     * `datastore.stopAutocompaction()`.
+     */
+    stopAutocompaction(): void;
   }
 }
 
